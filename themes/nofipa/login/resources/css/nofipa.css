@@ -1,0 +1,607 @@
+/*
+ * nofipaBASE Keycloak login theme
+ *
+ * Mirrors the frontend design system defined in
+ *   frontend/src/index.css
+ *   frontend/tailwind.config.ts
+ *   frontend/src/components/ui/{button,input,card,label}.tsx
+ *
+ * The HSL design tokens below are a verbatim copy of the frontend's
+ * :root tokens — using `hsl(var(--token))` ensures the browser computes
+ * identical RGB values to Tailwind, byte-for-byte.
+ *
+ * Targets the live DOM of the parent `keycloak` (PatternFly 4) theme as
+ * verified via Playwright DOM dump.
+ */
+
+:root {
+  /* === Design tokens (verbatim from frontend/src/index.css) === */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+  --primary: 207 37% 48%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 0 0% 30%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 207 37% 48%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 207 37% 48%;
+  --radius: 0.375rem;
+
+  /* === Design system shadows (Tailwind defaults) === */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+
+  /* === Tailwind size primitives used below === */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------- Reset / global ---------- */
+
+html.login-pf,
+html.login-pf body,
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ---------- Layout: single centered column ---------- */
+/* Override PF4's two-column grid on .login-pf-page. */
+
+.login-pf-page {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  grid-template-columns: none !important;
+  grid-template-areas: none !important;
+  min-height: 100dvh !important; /* dynamic viewport: respects mobile chrome */
+  min-height: 100vh; /* fallback for browsers without dvh */
+  width: 100% !important;
+  max-width: none !important;
+  padding: 16px !important; /* tighter top/bottom so content fits without scroll */
+  margin: 0 !important;
+  background: hsl(var(--background)) !important;
+  background-image: none !important;
+  overflow-y: auto !important; /* scroll only when truly needed */
+}
+
+html.login-pf,
+html.login-pf body,
+body {
+  overflow-y: auto !important;
+}
+
+/* Header column */
+.login-pf-page #kc-header,
+.login-pf-page .login-pf-page-header {
+  width: auto !important;
+  max-width: 384px !important;
+  margin: 0 auto 20px auto !important; /* tightened from 32px */
+  padding: 0 !important;
+  background: transparent !important;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+/* ---------- Logo + wordmark + subtitle (mirrors Login.tsx) ---------- */
+/* DOM: <div id="kc-header"><div id="kc-header-wrapper">nofipa</div></div>
+   We hide the literal "nofipa" text and replace it via pseudo-elements,
+   then add a subtitle via #kc-header::after. */
+
+#kc-header-wrapper {
+  font-size: 0 !important;
+  color: transparent !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  line-height: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Logo: w-12 h-12 rounded-xl bg-primary (mb tightened for vertical fit) */
+#kc-header-wrapper::before {
+  content: "N";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;             /* w-12 */
+  height: 48px;            /* h-12 */
+  margin: 0 auto 12px auto;/* tightened from mb-4 */
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-family: var(--font-sans);
+  font-size: 20px;         /* text-xl */
+  font-weight: 700;        /* font-bold */
+  line-height: 1;
+  border-radius: 12px;     /* rounded-xl */
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Wordmark: text-2xl font-bold text-foreground (Login.tsx line 20) */
+#kc-header-wrapper::after {
+  content: "nofipaBASE";
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 24px;         /* text-2xl */
+  line-height: 32px;       /* text-2xl line-height */
+  font-weight: 700;        /* font-bold */
+  color: hsl(var(--foreground));
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Subtitle: text-sm text-muted-foreground mt-1 (Login.tsx line 21) */
+#kc-header::after {
+  content: "Sign in with your nofipa account";
+  display: block;
+  margin-top: 4px;         /* mt-1 */
+  font-family: var(--font-sans);
+  font-size: 14px;         /* text-sm */
+  line-height: 20px;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  text-transform: none;
+  letter-spacing: normal;
+  text-align: center;
+}
+
+/* ---------- Card (mirrors components/ui/card.tsx) ---------- */
+/* card.tsx: "rounded-lg border bg-card text-card-foreground shadow-sm"
+   We use rounded-xl (12px) instead of rounded-lg (6px) for visual
+   harmony with the rounded-xl logo above. p-6 = 24px padding. */
+
+.card-pf {
+  width: 100% !important;
+  max-width: 384px !important; /* max-w-sm */
+  margin: 0 auto !important;
+  padding: 20px 24px !important; /* tighter vertical, p-5/p-6 mix */
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-top: 1px solid hsl(var(--border)) !important;
+  border-radius: 12px !important; /* rounded-xl, matches logo */
+  box-shadow: var(--shadow-sm) !important;
+  background-image: none !important;
+}
+
+.login-pf-header {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Frontend has no in-card title — hide the "Sign in to your account" h1 */
+#kc-page-title {
+  display: none !important;
+}
+
+#kc-content,
+#kc-content-wrapper,
+#kc-form,
+#kc-form-wrapper {
+  width: 100%;
+}
+
+/* space-y-3 between form groups (tightened from 16px) */
+.form-group {
+  margin: 0 0 12px 0;
+}
+
+#kc-form-login > .form-group:last-of-type {
+  margin-bottom: 0;
+}
+
+/* ---------- Labels (mirrors label.tsx) ---------- */
+/* "text-sm font-medium leading-none" */
+
+.pf-c-form__label,
+.pf-c-form__label-text,
+label,
+.control-label {
+  display: inline-block !important;
+  margin-bottom: 6px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;       /* text-sm */
+  font-weight: 500 !important;      /* font-medium */
+  line-height: 1 !important;        /* leading-none */
+  color: hsl(var(--foreground)) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+/* ---------- Inputs (mirrors input.tsx) ---------- */
+/* "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2
+    text-base ring-offset-background placeholder:text-muted-foreground
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+    focus-visible:ring-offset-2 md:text-sm" */
+
+.pf-c-form-control,
+input.pf-c-form-control,
+input[type="text"].pf-c-form-control,
+input[type="password"].pf-c-form-control,
+input[type="email"].pf-c-form-control {
+  display: flex !important;
+  width: 100% !important;
+  height: 40px !important;          /* h-10 */
+  padding: 8px 12px !important;     /* px-3 py-2 */
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;       /* md:text-sm */
+  line-height: 1.25 !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background)) !important;
+  background-image: none !important;
+  border: 1px solid hsl(var(--input)) !important;
+  border-radius: 4px !important;    /* rounded-md = --radius (6px) - 2px */
+  box-shadow: none !important;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease !important;
+}
+
+.pf-c-form-control::placeholder {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* focus-visible:ring-2 ring-ring ring-offset-2 ring-offset-background
+   → 2px white offset, then 2px primary ring outside */
+.pf-c-form-control:focus,
+.pf-c-form-control:focus-visible {
+  outline: none !important;
+  border-color: hsl(var(--ring)) !important;
+  box-shadow:
+    0 0 0 2px hsl(var(--background)),
+    0 0 0 4px hsl(var(--ring)) !important;
+}
+
+.pf-c-form-control[aria-invalid="true"] {
+  border-color: hsl(var(--destructive)) !important;
+}
+
+.pf-c-form-control[aria-invalid="true"]:focus {
+  box-shadow:
+    0 0 0 2px hsl(var(--background)),
+    0 0 0 4px hsl(var(--destructive)) !important;
+}
+
+/* ---------- Password input group (input with overlaid show/hide icon) ---------- */
+/* Modern shadcn pattern: the eye icon sits INSIDE the input as an
+   absolutely-positioned ghost button. The input gets padding-right to
+   make room for the icon. The whole thing looks like a single field
+   with a trailing icon, not two attached cells. */
+
+.pf-c-input-group {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Restore full input border + radius (no cut corners) and reserve
+   space on the right for the icon button. Selector specificity must
+   beat `input[type="password"].pf-c-form-control` (0,2,1) above. */
+.card-pf .pf-c-input-group input.pf-c-form-control,
+.card-pf .pf-c-input-group input[type="password"].pf-c-form-control {
+  width: 100% !important;
+  border: 1px solid hsl(var(--input)) !important;
+  border-radius: 4px !important;
+  padding: 8px 40px 8px 12px !important; /* pr-10 for icon room */
+}
+
+.pf-c-input-group .pf-c-form-control:focus {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ghost icon button overlaid on the right side of the input.
+   Aggressively strip all PF4 inherited chrome: PF4's `.pf-m-control`
+   has a bottom underline border via `::after`, an inset box-shadow,
+   and uses CSS custom properties for backgrounds — all need killing
+   so the button looks like a borderless shadcn ghost icon button. */
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control,
+.card-pf .pf-c-input-group button.pf-c-button.pf-m-control {
+  position: absolute !important;
+  top: 50% !important;
+  right: 4px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 none !important;
+  border-top: 0 none !important;
+  border-right: 0 none !important;
+  border-bottom: 0 none !important;
+  border-left: 0 none !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  color: hsl(var(--muted-foreground)) !important;
+  cursor: pointer;
+  z-index: 2;
+  /* Kill PF4 custom-property-driven backgrounds */
+  --pf-c-button--BackgroundColor: transparent !important;
+  --pf-c-button--m-control--BackgroundColor: transparent !important;
+  --pf-c-button--m-control--hover--BackgroundColor: transparent !important;
+  --pf-c-button--m-control--after--BorderTopColor: transparent !important;
+  --pf-c-button--m-control--after--BorderRightColor: transparent !important;
+  --pf-c-button--m-control--after--BorderBottomColor: transparent !important;
+  --pf-c-button--m-control--after--BorderLeftColor: transparent !important;
+  --pf-c-button--m-control--after--BorderWidth: 0 !important;
+}
+
+/* Kill PF4's `::before` and `::after` pseudo-elements (used for the
+   bottom underline border on form-control buttons). */
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control::before,
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control::after {
+  content: none !important;
+  display: none !important;
+  border: 0 none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control:hover {
+  background: hsl(var(--secondary)) !important;
+  background-color: hsl(var(--secondary)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control:focus,
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control:focus-visible {
+  outline: none !important;
+  background: hsl(var(--secondary)) !important;
+  background-color: hsl(var(--secondary)) !important;
+  color: hsl(var(--foreground)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring)) !important;
+}
+
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control i,
+.card-pf .pf-c-input-group .pf-c-button.pf-m-control .fa {
+  font-size: 14px !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* ---------- Buttons (mirrors button.tsx default + size=lg) ---------- */
+/* button.tsx base: "inline-flex items-center justify-center gap-2
+   whitespace-nowrap rounded-md text-sm font-medium ring-offset-background
+   transition-colors focus-visible:outline-none focus-visible:ring-2
+   focus-visible:ring-ring focus-visible:ring-offset-2
+   disabled:pointer-events-none disabled:opacity-50"
+   variant=default: "bg-primary text-primary-foreground hover:bg-primary/90"
+   size=lg: "h-11 rounded-md px-8" */
+
+.pf-c-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;       /* text-sm */
+  font-weight: 500 !important;      /* font-medium */
+  line-height: 1 !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;    /* rounded-md */
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease, border-color 0.15s ease !important;
+  text-decoration: none !important;
+}
+
+.pf-c-button.pf-m-primary,
+input.pf-c-button.pf-m-primary,
+button.pf-c-button.pf-m-primary {
+  height: 44px !important;          /* h-11 (size=lg) */
+  padding: 0 32px !important;       /* px-8 (size=lg) */
+  background: hsl(var(--primary)) !important;
+  background-color: hsl(var(--primary)) !important;
+  background-image: none !important;
+  border-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* hover:bg-primary/90 → primary at 90% alpha */
+.pf-c-button.pf-m-primary:hover {
+  background: hsl(var(--primary) / 0.9) !important;
+  background-color: hsl(var(--primary) / 0.9) !important;
+  border-color: hsl(var(--primary) / 0.9) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.pf-c-button.pf-m-primary:focus,
+.pf-c-button.pf-m-primary:focus-visible {
+  outline: none !important;
+  box-shadow:
+    0 0 0 2px hsl(var(--background)),
+    0 0 0 4px hsl(var(--ring)) !important;
+}
+
+.pf-c-button.pf-m-primary:active {
+  background: hsl(var(--primary) / 0.85) !important;
+  background-color: hsl(var(--primary) / 0.85) !important;
+  border-color: hsl(var(--primary) / 0.85) !important;
+}
+
+/* Block button: full width */
+.pf-c-button.pf-m-block {
+  width: 100% !important;
+}
+
+/* The actual submit button has classes "pf-c-button pf-m-primary pf-m-block btn-lg"
+   — pf-m-block + pf-m-primary already covered above. */
+
+#kc-form-buttons {
+  margin-top: 16px !important;     /* gap before submit (tightened) */
+  margin-bottom: 0 !important;
+}
+
+/* ---------- Links ---------- */
+
+a,
+a:link,
+a:visited,
+#kc-form-options a,
+#kc-info a,
+.login-pf-settings a {
+  color: hsl(var(--primary)) !important;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+
+a:hover,
+a:focus {
+  color: hsl(var(--primary) / 0.85) !important;
+  text-decoration: underline;
+}
+
+/* "Forgot Password?" row — right-aligned, small */
+.login-pf-settings,
+#kc-form-options {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center;
+  font-size: 13px;
+  margin: 4px 0 8px 0 !important;
+  padding: 0 !important;
+}
+
+/* ---------- Info / help text panel (e.g. forgot-password instructions) ---------- */
+
+#kc-info,
+#kc-info-wrapper,
+.login-pf-page .login-pf-signup,
+.login-pf-page #kc-info-wrapper {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 12px 0 0 0 !important;
+  margin: 12px auto 0 auto !important;
+  max-width: 384px !important;
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* ---------- Alerts ---------- */
+
+.alert,
+.pf-c-alert {
+  border-radius: 4px !important;
+  border: 1px solid transparent !important;
+  padding: 12px 14px !important;
+  font-size: 13px !important;
+  margin-bottom: 16px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  background-image: none !important;
+}
+
+.alert-error,
+.pf-c-alert.pf-m-danger {
+  background: hsl(var(--destructive) / 0.08) !important;
+  border-color: hsl(var(--destructive) / 0.35) !important;
+  color: hsl(0 72% 38%) !important;
+}
+
+.alert-warning {
+  background: hsl(38 92% 50% / 0.10) !important;
+  border-color: hsl(38 92% 50% / 0.40) !important;
+  color: hsl(38 92% 28%) !important;
+}
+
+.alert-success {
+  background: hsl(142 71% 45% / 0.10) !important;
+  border-color: hsl(142 71% 45% / 0.35) !important;
+  color: hsl(142 71% 28%) !important;
+}
+
+.alert-info {
+  background: hsl(210 70% 55% / 0.10) !important;
+  border-color: hsl(210 70% 55% / 0.35) !important;
+  color: hsl(210 70% 32%) !important;
+}
+
+/* Field-level inline validation message */
+.pf-c-form__helper-text.pf-m-error,
+.help-block.error,
+#input-error {
+  color: hsl(var(--destructive)) !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+  font-weight: 400 !important;
+}
+
+/* ---------- Checkbox (Remember me) ---------- */
+
+.checkbox label,
+.pf-c-check__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: hsl(var(--foreground));
+}
+
+input[type="checkbox"] {
+  accent-color: hsl(var(--primary));
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 480px) {
+  .login-pf-page {
+    padding: 24px 16px !important;
+  }
+  .card-pf {
+    padding: 20px !important;
+  }
+}
